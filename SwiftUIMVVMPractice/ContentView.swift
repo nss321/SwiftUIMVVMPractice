@@ -44,7 +44,7 @@ struct ContentView: View {
             }
             Text(UserDefaults.groupShared.string(forKey: "nickname") ?? "N/A")
                 .padding()
-            CountView()
+            CountView(viewModel: CountViewModel())
         }
         .padding()
     }
@@ -63,7 +63,7 @@ struct ContentView: View {
  */
 struct CountView: View {
 //    @State private var age = 0
-    @StateObject private var viewModel = CountViewModel()
+    @Bindable var viewModel: CountViewModel // Bindable은 Storeed Property로 들고 있을 수 없음
     var body: some View {
         Text("나이: \(viewModel.age)")
         Button("클릭") {
@@ -72,8 +72,10 @@ struct CountView: View {
     }
 }
 
-class CountViewModel: ObservableObject {
-    @Published var age = 0
+// Observable 매크로는 모든 프로퍼티를 관찰, 그러나 변경된 프로퍼티만 추적해서 불필요한 렌더링을 감소함
+@Observable // -> ObservableObject Protocol, Published Wrapper
+class CountViewModel/*: ObservableObject*/ {
+    /*@Published */var age = 0
     
     func addAge() {
         age += 1
